@@ -2,6 +2,7 @@
 #include "cstdlib"
 #include "FileReader.h"
 #include "config.h"
+#include "ILI9341Driver.h"
 
 
 class KanjiRenderer {

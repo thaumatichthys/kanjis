@@ -96,4 +96,50 @@ CMakeFiles/kanjis.dir/KanjiRenderer.cpp.obj: \
  C\:\VSARM\sdk\pico\pico-sdk\src\rp2040\hardware_regs\include/hardware/regs/spi.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\common\pico_sync\include/pico/sem.h \
  C\:\RPIPIC~1\kanjis\NO-OS-~1\FATFS_~1\SD_DRI~1/sd_card.h \
- C\:\rpi\ pico\kanjis\config.h
+ C\:\rpi\ pico\kanjis\config.h C\:\rpi\ pico\kanjis\ILI9341Driver.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\math.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\cmath \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\cpp_type_traits.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\ext\type_traits.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\math.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\specfun.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\stl_algobase.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\functexcept.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\exception_defines.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\ext\numeric_traits.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\stl_pair.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\move.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\type_traits \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\compare \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\concepts \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\stl_iterator_base_types.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\iterator_concepts.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\ptr_traits.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\range_cmp.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\stl_iterator_base_funcs.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\concept_check.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\debug\assertions.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\stl_iterator.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\new \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\exception \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\exception.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\exception_ptr.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\cxxabi_init_exception.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\typeinfo \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\hash_bytes.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\nested_exception.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\debug\debug.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\predefined_ops.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\limits \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\gamma.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\special_function_util.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\bessel_function.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\beta_function.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\ell_integral.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\exp_integral.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\hypergeometric.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\legendre_function.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\modified_bessel_func.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\poly_hermite.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\poly_laguerre.tcc \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\tr1\riemann_zeta.tcc
