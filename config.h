@@ -1,3 +1,6 @@
+#pragma once
+
+
 #define SCREEN_X_RES 240
 #define SCREEN_Y_RES 320
 

@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include "pico/stdlib.h"
 #include "cstdlib" // idk why pico/stdlib.h doesn't cover this, but malloc and free won't compile without this
 

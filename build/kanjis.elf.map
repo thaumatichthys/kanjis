@@ -5489,9 +5489,9 @@ Discarded input sections
                 0x00000000        0x4 CMakeFiles/kanjis.dir/C_/VSARM/sdk/pico/pico-sdk/src/rp2_common/hardware_rtc/rtc.c.obj
  .rodata.__func__.0
                 0x00000000        0x9 CMakeFiles/kanjis.dir/C_/VSARM/sdk/pico/pico-sdk/src/rp2_common/hardware_rtc/rtc.c.obj
- .text          0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
- .data          0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
- .bss           0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
+ .text          0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
+ .data          0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
+ .bss           0x00000000        0x0 C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
  .text          0x00000000        0x0 c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a(guard.o)
  .data          0x00000000        0x0 c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a(guard.o)
  .bss           0x00000000        0x0 c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a(guard.o)
@@ -10070,7 +10070,7 @@ LOAD c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../
 .boot2          0x10000000      0x100
                 0x10000000                __boot2_start__ = .
  *(.boot2)
- .boot2         0x10000000      0x100 C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
+ .boot2         0x10000000      0x100 C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
                 0x10000100                __boot2_end__ = .
                 0x00000001                ASSERT (((__boot2_end__ - __boot2_start__) == 0x100), ERROR: Pico second stage bootloader must be 256 bytes in size)
 
@@ -16424,7 +16424,7 @@ LOAD CMakeFiles/kanjis.dir/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI/src/my_debug.c.
 LOAD CMakeFiles/kanjis.dir/no-OS-FatFS-SD-SPI-RPi-Pico/FatFs_SPI/src/rtc.c.obj
 LOAD CMakeFiles/kanjis.dir/C_/VSARM/sdk/pico/pico-sdk/src/rp2_common/hardware_rtc/rtc.c.obj
 LOAD pico-tflmicro\libpico-tflmicro.a
-LOAD C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
+LOAD C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
 LOAD c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a
 LOAD c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libm.a
 START GROUP
@@ -16747,7 +16747,7 @@ LOAD linker stubs
  .ARM.attributes
                 0x0000195c       0x2c CMakeFiles/kanjis.dir/C_/VSARM/sdk/pico/pico-sdk/src/rp2_common/hardware_rtc/rtc.c.obj
  .ARM.attributes
-                0x00001988       0x22 C:\Users\10052\AppData\Local\Temp\cc4Diwcl.o
+                0x00001988       0x22 C:\Users\10052\AppData\Local\Temp\ccCZZUcd.o
  .ARM.attributes
                 0x000019aa       0x2c c:/progra~2/gnuarm~1/102020~1/bin/../lib/gcc/arm-none-eabi/10.2.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a(guard.o)
  .ARM.attributes

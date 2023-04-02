@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pico/stdlib.h"
 #include "cstdlib"
 #include "FileReader.h"
