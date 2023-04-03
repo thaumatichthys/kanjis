@@ -83,5 +83,4 @@ CMakeFiles/kanjis.dir/C_/VSARM/sdk/pico/pico-sdk/lib/tinyusb/src/tusb.c.obj: \
  C\:\VSARM\sdk\pico\pico-sdk\lib\tinyusb\src\device/usbd.h \
  C\:\VSARM\sdk\pico\pico-sdk\lib\tinyusb\src\class/cdc/cdc_device.h \
  C\:\VSARM\sdk\pico\pico-sdk\lib\tinyusb\src\class/cdc/cdc.h \
- C\:\VSARM\sdk\pico\pico-sdk\lib\tinyusb\src\device/usbd_pvt.h \
- c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\ctype.h
+ C\:\VSARM\sdk\pico\pico-sdk\lib\tinyusb\src\device/usbd_pvt.h

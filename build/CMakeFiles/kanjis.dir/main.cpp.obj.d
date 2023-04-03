@@ -84,6 +84,10 @@ CMakeFiles/kanjis.dir/main.cpp.obj: C\:\rpi\ pico\kanjis\main.cpp \
  C\:\VSARM\sdk\pico\pico-sdk\src\rp2040\hardware_regs\include/hardware/regs/clocks.h \
  C\:\rpi\ pico\kanjis\test_images.h C\:\rpi\ pico\kanjis\images.hpp \
  C\:\rpi\ pico\kanjis\ILI9341Driver.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\string.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\_locale.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\strings.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\string.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\rp2_common\hardware_spi\include/hardware/spi.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\rp2040\hardware_structs\include/hardware/structs/spi.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\rp2040\hardware_regs\include/hardware/regs/spi.h \
@@ -152,10 +156,6 @@ CMakeFiles/kanjis.dir/main.cpp.obj: C\:\rpi\ pico\kanjis\main.cpp \
  C\:\RPIPIC~1\kanjis\PICO-T~1\src/tensorflow/lite/micro/micro_mutable_op_resolver.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\cstdio \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\cstring \
- c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\string.h \
- c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\_locale.h \
- c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\strings.h \
- c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\string.h \
  C\:\RPIPIC~1\kanjis\PICO-T~1\src/tensorflow/lite/c/common.h \
  C\:\RPIPIC~1\kanjis\PICO-T~1\src/tensorflow/lite/core/api/error_reporter.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\cstdarg \

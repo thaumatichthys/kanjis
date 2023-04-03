@@ -97,6 +97,10 @@ CMakeFiles/kanjis.dir/KanjiRenderer.cpp.obj: \
  C\:\VSARM\sdk\pico\pico-sdk\src\common\pico_sync\include/pico/sem.h \
  C\:\RPIPIC~1\kanjis\NO-OS-~1\FATFS_~1\SD_DRI~1/sd_card.h \
  C\:\rpi\ pico\kanjis\config.h C\:\rpi\ pico\kanjis\ILI9341Driver.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\string.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\_locale.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\strings.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\string.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\math.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\cmath \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\c++\10.2.1\bits\cpp_type_traits.h \

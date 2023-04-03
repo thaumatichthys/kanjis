@@ -30,6 +30,10 @@ CMakeFiles/kanjis.dir/ILI9341Driver.cpp.obj: \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\sched.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\machine\types.h \
  c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\stdio.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\string.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\_locale.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\strings.h \
+ c\:\progra~2\gnuarm~1\102020~1\arm-none-eabi\include\sys\string.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\common\pico_stdlib\include/pico/stdlib.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\common\pico_base\include/pico.h \
  C\:\VSARM\sdk\pico\pico-sdk\src\common\pico_base\include/pico/types.h \

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdio.h"
+#include "string.h"
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/dma.h"
@@ -76,20 +77,22 @@ class ILI9341 {
     static uint8_t tft_rst;
     static uint8_t tft_dc;
     static spi_inst_t* spi_port;
-    static void dma_finished_handler();
-    static uint dma_chan;
-    static dma_channel_config dma_cfg;
+
+    static bool prev_detected;
+    static uint16_t prev_x;
+    static uint16_t prev_y;
+
     void Write16(uint16_t value);
-    void DMAWrite16(const uint16_t* data, uint32_t n, bool increment);
-    void InitDMA();
+
+    static void SetPinState(uint8_t pin, bool state);
+    static void CPUDelay();
+
     public:
-    static bool dma_write_complete;
     void Init();
     uint16_t RGBto16bit(uint8_t r, uint8_t g, uint8_t b);
-    void FillArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint16_t colour);
+    void FillSmallArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint16_t colour);
     void WritePixel(uint16_t x, uint16_t y, uint16_t colour);
-    void WriteImage(const uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-    void WriteImage(const uint16_t* img);
+    void WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
     bool ReadTouch(uint16_t* x, uint16_t* y);
     //void CalibrateTouchBlocking();
     void CorrectValues(uint16_t* x, uint16_t* y, const float coefficients[3][3]);

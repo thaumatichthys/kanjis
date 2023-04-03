@@ -29,8 +29,8 @@ KanjiRenderer kr;
 int8_t drawing_area[64][64];
 uint16_t guesses[6];
 
-bool changed = false;
-bool dchanged = false;
+uint32_t last_time;
+bool render_request = false;
 
 #define millis() to_ms_since_boot(get_absolute_time())
 
@@ -39,20 +39,34 @@ void display_handler(uint16_t x, uint16_t y, uint16_t colour) {
 }
 
 void buf_handler(uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    dp.WriteImage(img, x, y, w, h);
+    dp.WriteSmallImage(img, x, y, w, h);
 }
 
+const uint16_t thumbnail_coords[][2] {
+    { 257, 176 },
+    { 257, 112 },
+    { 257, 48 },
+    { 193, 176 },
+    { 193, 112 },
+    { 193, 48 }
+};
+
 int a = 1;
+bool core1_active = false;
+bool ready = false;
 void multicore_task() {
-    while(1) {
-        GetNMostLikely(drawing_area, guesses, 6);
-        changed = true;
-        a = 1 - a;
-        gpio_put(25, a);
-        printf("ranking: %d, %d, %d, %d, %d, %d\n", guesses[0], guesses[1], guesses[2], guesses[3], guesses[4], guesses[5]);
-        printf("pix %d\n", drawing_area[0][0]);
-    }
+    render_request = false;
+    gpio_put(25, 1);
+    long start = millis();
+    GetNMostLikely(drawing_area, guesses, 6);
+    ready = true;
+    printf("inference took %dms\n", millis() - start);
+    gpio_put(25, 0);
+    a = 1 - a;
     
+    printf("ranking: %d, %d, %d, %d, %d, %d\n", guesses[0], guesses[1], guesses[2], guesses[3], guesses[4], guesses[5]);
+    printf("pix %d\n", drawing_area[0][0]);
+    render_request = true;
 }
 
 void clear() {
@@ -61,8 +75,7 @@ void clear() {
             drawing_area[x][y] = (int8_t) -128;
         }
     }
-    dp.FillArea(0, 64 * 3, 0, 64 * 3, 0);
-    dchanged = true;
+    dp.FillSmallArea(0, 192, 48, 240, 0);
 }
 
 int main() {
@@ -85,58 +98,49 @@ int main() {
     tf.SetFont(FreeSansOblique24pt7b, 0x0);
     tf.SetDisplayHandler(display_handler);
 
-    dp.FillArea(0, 320, 0, 240, 0xFFFF);
+    dp.FillSmallArea(0, 320, 0, 240, 0xFFFF); // background
+    dp.FillSmallArea(192, 320, 0, 48, 0b1000010000010000); // run button
+    dp.FillSmallArea(0, 64, 0, 48, dp.RGBto16bit(127, 150, 127)); // clear button
+    dp.FillSmallArea(65, 128, 0, 48, dp.RGBto16bit(200, 200, 200)); // erase button
+    dp.FillSmallArea(129, 192, 0, 48, dp.RGBto16bit(127, 150, 127)); // cancel button
+    
 
-    tf.RenderText(100, 100, "hey!\n()-+={}|");
 
 
     kr.SetFontColour(0);
     kr.OpenFile("64x64.bruh", 64);
     kr.SetDisplayHandler(buf_handler);
-    kr.Render(192, 192, 1234);
-
-    //tf.RenderChar(display_buffer, 50, 50, 'a');
-
-    //dp.WriteImage(display_buffer);
-    //sleep_ms(3000);
 
     clear();
 
-    multicore_launch_core1(multicore_task);
-
-    uint32_t last_time = millis();
     while(1) {
-        //gpio_put(25, 1);
-        //sleep_ms(100);
-        //gpio_put(25, 0);
-
         uint16_t x;
         uint16_t y;
         if (dp.ReadTouch(&x, &y)) {
-            if (x < 192 && y < 192) {
-                drawing_area[64 - y / 3 - 1][x / 3] = 127;
-                dp.FillArea(x - 1, x + 1, y - 1, y + 1, 0xFFFF);
+            if (x < 192 && y >= 48) {
+                drawing_area[64 - (y - 48) / 3 - 1][x / 3] = 127;
+                dp.FillSmallArea(x - 1, x + 1, y - 1, y + 1, 0xFFFF);
+                ready = false;
             }
-            else if (x < 192 && y > 192) {
+            else if (x < 64 && y < 48) {
                 clear();
             }
-            dchanged = true;
-            last_time = millis();
+            else if (x > 192 && y < 48) {
+                for (int i = 0; i < 6; i++) {
+                    kr.Render(thumbnail_coords[i][0], thumbnail_coords[i][1], guesses[i]);
+                }
+                render_request = false;
+            }
+            if (core1_active) {
+                multicore_reset_core1();
+                core1_active = false;
+            } 
         }
-        
-        else if (dchanged && (millis() - last_time > 2000)) {
-            //dp.FillArea(192, 0, 320, 192, 0xFFFF);
-            kr.SetFontColour(0b1111100000000000);
-            kr.Render(192, 0, guesses[0]);
-            sleep_ms(200);
-            kr.SetFontColour(0);
-            kr.Render(192 + 64, 0, guesses[1]);
-            kr.Render(192, 64, guesses[2]);
-            kr.Render(192 + 64, 64, guesses[3]);
-            kr.Render(192, 128, guesses[4]);
-            kr.Render(192 + 64, 128, guesses[5]);
-            last_time = millis();
-            dchanged = false;
+        else {
+            if (!core1_active) {
+                multicore_launch_core1(multicore_task);
+                core1_active = true;
+            }
         }
     }
 }
