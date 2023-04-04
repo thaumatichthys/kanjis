@@ -18,6 +18,8 @@ add_executable(${PROJECT_NAME}
     FileReader.cpp
     KanjiRenderer.cpp
     hw_config.c
+    TaskScheduler.cpp
+    ProgressBar.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
