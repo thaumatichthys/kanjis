@@ -1,3 +1,6 @@
+# note from thaumatichthys: this is a copy paste from [here](https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico)
+
+
 # no-OS-FatFS-SD-SPI-RPi-Pico
 
 ## Simple library for SD Cards on the Pico

@@ -1,3 +1,5 @@
+# note from thaumatichthys: this is a copy paste from [here](https://github.com/raspberrypi/pico-tflmicro)
+
 
 # TensorFlow Lite Micro
 
