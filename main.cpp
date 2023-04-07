@@ -124,7 +124,9 @@ int main() {
                 compute_results();
             }
             else if (x > 192 && y < 48) {
+                kr.SetFontColour(0b1111100000000000);
                 for (int i = 0; i < 6; i++) {
+                    if (i == 1) kr.SetFontColour(0);
                     kr.Render(thumbnail_coords[i][0], thumbnail_coords[i][1], guesses[i]);
                 }
             }

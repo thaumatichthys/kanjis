@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
     hw_config.c
     TaskScheduler.cpp
     ProgressBar.cpp
+    UnifiedTextRenderer.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
