@@ -170,6 +170,44 @@ void ILI9341::WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint1
     ILI9341::SetPinState(ILI9341::tft_cs, 1);
 }
 
+void ILI9341::RenderBinary(const uint8_t* img, uint16_t colour, uint16_t background, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+    ILI9341::SetPinState(ILI9341::tft_cs, 0);
+
+    const uint8_t column_address_set = 0x2A;
+    const uint8_t page_address_set = 0x2B;
+    const uint8_t memory_write = 0x2C;
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &column_address_set, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+    this->Write16(y);
+    this->Write16(y + h - 1);
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &page_address_set, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+    this->Write16(x);
+    this->Write16(x + w);
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &memory_write, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+
+    for (int x_offset = 0; x_offset < w; x_offset++) {
+        for (int y_offset = h - 1; y_offset >= 0; y_offset--) {
+            int bit_number = x_offset + w * y_offset;
+            int bit_offset = bit_number % 8; // (the bit inside the byte)
+            int current_file_index = bit_number / 8;
+            if (img[current_file_index] & (1U << (8 - bit_offset - 1)))
+                this->Write16(colour);
+            else
+                this->Write16(background);
+        }
+    }
+
+    ILI9341::SetPinState(ILI9341::tft_cs, 1);
+}
+
 bool ILI9341::ReadTouch(uint16_t* x, uint16_t* y) {
     spi_set_baudrate(ILI9341::spi_port, ILI9341::xpt_baudrate); // the touch controller is quite slow
     ILI9341::SetPinState(ILI9341::xpt_cs, 0);

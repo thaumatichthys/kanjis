@@ -26,11 +26,13 @@
 ILI9341 dp;
 GFXFontRenderer tf;
 KanjiRenderer kr;
+KanjiRenderer is;
 
 int8_t drawing_area[64][64];
 uint64_t visual_drawing_area[192][3];
 uint16_t guesses[6];
 uint16_t currently_rendered[6];
+uint16_t selected_kanji;
 
 #define millis() to_ms_since_boot(get_absolute_time())
 
@@ -38,14 +40,10 @@ void display_handler(uint16_t x, uint16_t y, uint16_t colour) {
     dp.WritePixel(x, y, colour);
 }
 
-void buf_handler(uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    dp.WriteSmallImage(img, x, y, w, h);
-}
-
 // todo: fix the stupid crashes
 
 
-const uint16_t thumbnail_coords[][2] {
+const uint16_t thumbnail_coords[][2] { // bottom left corners of tiles
     { 257, 176 },
     { 257, 112 },
     { 257, 48 },
@@ -82,9 +80,13 @@ void clear_drawing_area() {
     }
 }
 
+void visual_clear() {
+    dp.FillSmallArea(0, 192, 48, 240, 0);
+}
+
 void clear() {
     clear_drawing_area();
-    dp.FillSmallArea(0, 192, 48, 240, 0);
+    visual_clear();
 }
 
 void clear_visual_buffer() {
@@ -142,7 +144,7 @@ void init_draw_screen() {
     dp.FillSmallArea(0, 64, 0, 48, dp.RGBto16bit(127, 150, 127)); // clear button
     dp.FillSmallArea(65, 128, 0, 48, dp.RGBto16bit(200, 200, 200)); // erase button
     dp.FillSmallArea(129, 192, 0, 48, dp.RGBto16bit(127, 150, 127)); // cancel button
-    clear();
+    visual_clear();
     render_current();
     for (int x = 0; x < 192; x++) {
         for (int y = 0; y < 192; y++) {
@@ -176,6 +178,12 @@ void update_draw_screen() {
         }
         else if (x > 192 && y > 48) {
             screen = 1;
+            for (int i = 0; i < 6; i++) {
+                if ((thumbnail_coords[i][0] <= x) && (x < thumbnail_coords[i][0] + 64) && (thumbnail_coords[i][1] <= y) && (y < thumbnail_coords[i][1] + 64)) {
+                    selected_kanji = currently_rendered[i];
+                    break;
+                }
+            }
             init_info_screen();
         }
     }
@@ -187,9 +195,10 @@ void update_draw_screen() {
 }
 
 void init_info_screen() {
-    dp.FillSmallArea(0, 320, 0, 240, 0xFFFF);
+    //dp.FillSmallArea(0, 320, 0, 240, 0xFFFF);
+    is.Render(0, 0, selected_kanji);
     dp.FillSmallArea(256, 320, 208, 240, 0x7777);
-    kr.Render(100, 100, 123);
+    //kr.Render(100, 100, 123);
     sleep_ms(300);
 }
 
@@ -215,9 +224,10 @@ int main() {
     FileReader::Mount();
     dp.Init();
     kr.SetFontColour(0);
-    kr.OpenFile("64x64.bruh", 64);
-    kr.SetDisplayHandler(buf_handler);
-    clear_drawing_area();
+    kr.OpenFile("64x64.bruh", 64, 64);
+    is.SetFontColour(0);
+    is.OpenFile("kanji-info.bruh", 320, 240);
+    clear();
     GetNMostLikely(drawing_area, guesses, 6);
     render_results();
     init_draw_screen();

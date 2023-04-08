@@ -96,6 +96,7 @@ class ILI9341 {
     bool ReadTouch(uint16_t* x, uint16_t* y);
     //void CalibrateTouchBlocking();
     void CorrectValues(uint16_t* x, uint16_t* y, const float coefficients[3][3]);
+    void RenderBinary(const uint8_t* img, uint16_t colour, uint16_t background, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 };
 
 static const float calibration_matrix[3][3] = {
