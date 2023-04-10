@@ -10,16 +10,16 @@
 
 
 // default values
-#define MISO    16
-#define TFT_CS  15 // CS for the display
+#define MISO    12
+#define TFT_CS  14 // CS for the display
 #define XPT_CS  22 // CS for the touch controller
-#define SCLK    18
-#define MOSI    19
+#define SCLK    10
+#define MOSI    11
 #define TFT_RST 20
 #define TFT_DC  21
 #define TFT_BITRATE 40000000   // adjust to your needs
 #define XPT_BITRATE 500000    // the touch controller doesn't like 40MHz baud :/
-#define SPI_PORT spi0
+#define SPI_PORT spi1
 
 /*
     Methods of operation

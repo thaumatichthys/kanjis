@@ -1,9 +1,11 @@
 #include "stdio.h"
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
+#include "pico/bootrom.h"
 #include "hardware/gpio.h"
 #include "hardware/vreg.h"
 #include "hardware/clocks.h"
+#include "hardware/watchdog.h"
 
 #include "test_images.h"
 #include "images.hpp"
@@ -213,13 +215,43 @@ void update_info_screen() {
     }
 }
 
+void cli_reboot() {
+    if (getchar_timeout_us(0) == 'r') {
+        reset_usb_boot(0, 0);
+    }
+    AddTask(cli_reboot, 500);
+}
+
+
+void power_off() {
+    if ((!gpio_get(BUTTON_SENSE_PIN)) && to_ms_since_boot(get_absolute_time()) > 2000) {
+        gpio_set_dir(PSU_ENABLE_PIN, GPIO_IN);
+        printf("why is this printed\n");
+    }
+
+    AddTask(power_off, 30);
+}
+
+void update_watchdog() {
+    watchdog_update();
+    AddTask(update_watchdog, 500);
+}
+
 int main() {
+    gpio_init(PSU_ENABLE_PIN);
+    gpio_set_dir(PSU_ENABLE_PIN, GPIO_OUT);
+    gpio_put(PSU_ENABLE_PIN, 0);
     vreg_set_voltage(VREG_VOLTAGE_1_25);
     set_sys_clock_khz(360000, true);        // overclock to 360 MHz
     stdio_init_all();
+    watchdog_enable(4000, true);
+    gpio_init(TFT_BACKLIGHT_PIN);
+    gpio_set_dir(TFT_BACKLIGHT_PIN, GPIO_OUT);
     gpio_init(25);
     gpio_set_dir(25, GPIO_OUT);
     gpio_put(25, 1);
+    gpio_init(BUTTON_SENSE_PIN);
+    gpio_set_dir(BUTTON_SENSE_PIN, GPIO_IN);
     InitTensorflow();
     FileReader::Mount();
     dp.Init();
@@ -231,6 +263,10 @@ int main() {
     GetNMostLikely(drawing_area, guesses, 6);
     render_results();
     init_draw_screen();
+    gpio_put(TFT_BACKLIGHT_PIN, 1);
+    cli_reboot();
+    update_watchdog();
+    AddTask(power_off, 1000);
     while(1) {
         if (!screen)
             update_draw_screen();

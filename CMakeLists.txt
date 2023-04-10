@@ -26,6 +26,8 @@ target_link_libraries(${PROJECT_NAME}
     pico_stdlib
     pico_malloc
     pico_multicore
+    pico_bootrom
+    hardware_watchdog
     hardware_gpio
     hardware_vreg
     hardware_clocks
