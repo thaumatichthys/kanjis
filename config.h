@@ -6,6 +6,8 @@
 #define BUTTON_SENSE_PIN 6
 #define BATTERY_VOLTAGE_PIN 26
 
+#define SLEEP_TIMEOUT_MS 60 * 1000
+
 #define SCREEN_X_RES 240
 #define SCREEN_Y_RES 320
 

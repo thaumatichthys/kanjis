@@ -88,6 +88,8 @@ class ILI9341 {
     static void CPUDelay();
 
     public:
+    static bool disable_writing;
+
     void Init();
     uint16_t RGBto16bit(uint8_t r, uint8_t g, uint8_t b);
     void FillSmallArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint16_t colour);

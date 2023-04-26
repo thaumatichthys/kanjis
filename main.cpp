@@ -8,8 +8,7 @@
 #include "hardware/clocks.h"
 #include "hardware/watchdog.h"
 
-#include "test_images.h"
-#include "images.hpp"
+#include "images.h"
 
 #include "ILI9341Driver.h"
 #include "GFXFontRenderer.h"
@@ -28,8 +27,8 @@
 
 ILI9341 dp;
 GFXFontRenderer tf;
-KanjiRenderer kr;
-KanjiRenderer is;
+KanjiRenderer kr; // tiles for selection
+KanjiRenderer is; // info screen
 
 int8_t drawing_area[64][64];
 uint64_t visual_drawing_area[192][3];
@@ -37,7 +36,10 @@ uint16_t guesses[6];
 uint16_t currently_rendered[6];
 uint16_t selected_kanji;
 
-#define millis() to_ms_since_boot(get_absolute_time())
+int a = 1;
+bool core1_active = false;
+bool ready = false;
+uint64_t last_updated_ms = 2000;
 
 void display_handler(uint16_t x, uint16_t y, uint16_t colour) {
     dp.WritePixel(x, y, colour);
@@ -55,19 +57,15 @@ const uint16_t thumbnail_coords[][2] { // bottom left corners of tiles
     { 193, 48 }
 };
 
-int a = 1;
-bool core1_active = false;
-bool ready = false;
-
 ProgressBar pb(256, 24);
 
 void multicore_task() {
     gpio_put(25, 1);
-    long start = millis();
+    long start = to_ms_since_boot(get_absolute_time());
     ready = false;
     GetNMostLikely(drawing_area, guesses, 6);
     ready = true;
-    printf("inference took %dms\n", millis() - start);
+    printf("inference took %dms\n", to_ms_since_boot(get_absolute_time()) - start);
     gpio_put(25, 0);
     a = 1 - a;
     
@@ -136,10 +134,12 @@ bool read_visual_buffer(uint8_t x, uint8_t y) {
     return (bool) (visual_drawing_area[y][x / 64] & ((uint64_t) 1U << (x % 64)));
 }
 
-bool screen = 0; // 0 == draw, 1 == info
+uint8_t screen = 0; // 0 == draw, 1 == info, 2 == status
 
 void init_info_screen();
 void update_info_screen();
+void init_status_screen();
+void update_status_screen();
 
 void init_draw_screen() {
     dp.FillSmallArea(0, 320, 0, 240, 0xFFFF); // background
@@ -176,6 +176,13 @@ void update_draw_screen() {
             clear_visual_buffer();
             compute_results();
         }
+        else if (x >= 64 && x < 128 && y < 48) {
+            // UNDO BUTTON
+        }
+        else if (x >= 128 && x < 192 && y < 48) {
+            screen = 2;
+            init_status_screen();
+        }
         else if (x > 192 && y < 48) {
             render_results();
         }
@@ -198,14 +205,43 @@ void update_draw_screen() {
 }
 
 void init_info_screen() {
-    //dp.FillSmallArea(0, 320, 0, 240, 0xFFFF);
     is.Render(0, 0, selected_kanji);
     dp.FillSmallArea(256, 320, 208, 240, 0x7777);
-    //kr.Render(100, 100, 123);
     sleep_ms(300);
 }
 
 void update_info_screen() {
+    uint16_t x;
+    uint16_t y;
+    if (dp.ReadTouch(&x, &y)) {
+        if (x > 256 && y > 208) {
+            screen = 0;
+            init_draw_screen();
+        }
+    }
+}
+
+void update_status_voltage() {
+    if (screen != 2) return;
+    char buf[] = "Batt: X.XXV";
+    const uint8_t y_coord = 240;
+    float battery_voltage = 2 * 3.3f * (float) adc_read() / 4096;
+    snprintf(&buf[6], 5, "%f", battery_voltage);
+    buf[10] = 'V';
+    buf[11] = 0;
+    dp.FillSmallArea(0, 200, y_coord - 20, y_coord + 40, 0xFFFF);
+    tf.RenderText(0, y_coord, buf);
+    AddTask(update_status_voltage, 1000);
+}
+
+void init_status_screen() {
+    dp.FillSmallArea(0, 320, 0, 240, 0xFFFF);
+    dp.FillSmallArea(256, 320, 208, 240, 0x7777);
+    sleep_ms(300);
+    update_status_voltage();
+}
+
+void update_status_screen() {
     uint16_t x;
     uint16_t y;
     if (dp.ReadTouch(&x, &y)) {
@@ -223,11 +259,13 @@ void cli_reboot() {
     AddTask(cli_reboot, 500);
 }
 
+void disable_mosfet() {
+    gpio_set_dir(PSU_ENABLE_PIN, GPIO_IN);
+}
 
 void power_off() {
     if ((!gpio_get(BUTTON_SENSE_PIN)) && to_ms_since_boot(get_absolute_time()) > 2000) {
-        gpio_set_dir(PSU_ENABLE_PIN, GPIO_IN);
-        printf("why is this printed\n");
+        disable_mosfet();
     }
 
     AddTask(power_off, 30);
@@ -238,22 +276,31 @@ void update_watchdog() {
     AddTask(update_watchdog, 500);
 }
 
-void read_adc() {
-    float battery_voltage = 2 * 3.3f * (float) adc_read() / 4096;
-    printf("battery voltage: %f\n", battery_voltage);
-    AddTask(read_adc, 1000);
+void sleep_task() {
+    uint16_t dummy;
+    uint64_t current_time = to_ms_since_boot(get_absolute_time());
+    if (dp.ReadTouch(&dummy, &dummy))
+        last_updated_ms = current_time;
+    else if (current_time - last_updated_ms > SLEEP_TIMEOUT_MS) 
+        disable_mosfet();
+    AddTask(sleep_task, 100);
 }
 
 int main() {
     gpio_init(PSU_ENABLE_PIN);
     gpio_set_dir(PSU_ENABLE_PIN, GPIO_OUT);
     gpio_put(PSU_ENABLE_PIN, 0);
+
     vreg_set_voltage(VREG_VOLTAGE_1_25);
     set_sys_clock_khz(360000, true);        // overclock to 360 MHz
+
     stdio_init_all();
     watchdog_enable(4000, true);
+
     gpio_init(TFT_BACKLIGHT_PIN);
     gpio_set_dir(TFT_BACKLIGHT_PIN, GPIO_OUT);
+    
+
     gpio_init(25);
     gpio_set_dir(25, GPIO_OUT);
     gpio_put(25, 1);
@@ -262,27 +309,43 @@ int main() {
     adc_init();
     adc_gpio_init(BATTERY_VOLTAGE_PIN);
     adc_select_input(BATTERY_VOLTAGE_PIN - 26);
+
     InitTensorflow();
-    FileReader::Mount();
     dp.Init();
+    dp.WriteSmallImage(loading_image, 0, 0, 320, 240);
+    gpio_put(TFT_BACKLIGHT_PIN, 1);
+    dp.disable_writing = true;
+    FileReader::Mount();
+    
+    tf.SetDisplayHandler(display_handler);
+    tf.SetFont(FreeSansOblique24pt7b, 0);
     kr.SetFontColour(0);
     kr.OpenFile("64x64.bruh", 64, 64);
     is.SetFontColour(0);
     is.OpenFile("kanji-info.bruh", 320, 240);
+
     clear();
+
     GetNMostLikely(drawing_area, guesses, 6);
+
+    dp.disable_writing = false;
+
     render_results();
     init_draw_screen();
-    gpio_put(TFT_BACKLIGHT_PIN, 1);
+
+    //gpio_put(TFT_BACKLIGHT_PIN, 1);
+
     cli_reboot();
     update_watchdog();
     AddTask(power_off, 1000);
-    AddTask(read_adc, 1000);
+    AddTask(sleep_task, 1000);
     while(1) {
-        if (!screen)
+        if (screen == 0)
             update_draw_screen();
-        else
+        else if (screen == 1)
             update_info_screen();
+        else if (screen == 2)
+            update_status_screen();
         UpdateTasks();
     }
 }

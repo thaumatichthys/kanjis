@@ -18,6 +18,8 @@ bool ILI9341::prev_detected = false;
 uint16_t ILI9341::prev_x;
 uint16_t ILI9341::prev_y;
 
+bool ILI9341::disable_writing = false;
+
 void ILI9341::CPUDelay() {
     volatile uint8_t dummy = 0;
     for (uint32_t i = 0; i < (2000) / ILI9341::tft_baudrate; i++) { dummy = 123; }
@@ -86,6 +88,7 @@ uint16_t ILI9341::RGBto16bit(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void ILI9341::FillSmallArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint16_t colour) {
+    if (ILI9341::disable_writing) return;
     ILI9341::SetPinState(ILI9341::tft_cs, 0);
     const uint32_t area = (abs(xs - xe) + 1) * (abs(ys - ye) + 1);
     const uint8_t column_address_set = 0x2A;
@@ -115,6 +118,7 @@ void ILI9341::FillSmallArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, 
 }
 
 void ILI9341::WritePixel(uint16_t x, uint16_t y, uint16_t colour) {
+    if (ILI9341::disable_writing) return;
     ILI9341::SetPinState(ILI9341::tft_cs, 0);
     const uint8_t column_address_set = 0x2A;
     const uint8_t page_address_set = 0x2B;
@@ -141,6 +145,7 @@ void ILI9341::WritePixel(uint16_t x, uint16_t y, uint16_t colour) {
 }
 
 void ILI9341::WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+    if (ILI9341::disable_writing) return;
     ILI9341::SetPinState(ILI9341::tft_cs, 0);
 
     const uint8_t column_address_set = 0x2A;
@@ -171,6 +176,7 @@ void ILI9341::WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint1
 }
 
 void ILI9341::RenderBinary(const uint8_t* img, uint16_t colour, uint16_t background, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+    if (ILI9341::disable_writing) return;
     ILI9341::SetPinState(ILI9341::tft_cs, 0);
 
     const uint8_t column_address_set = 0x2A;
