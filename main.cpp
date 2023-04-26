@@ -224,12 +224,12 @@ void update_info_screen() {
 void update_status_voltage() {
     if (screen != 2) return;
     char buf[] = "Batt: X.XXV";
-    const uint8_t y_coord = 240;
+    const uint8_t y_coord = 200;
     float battery_voltage = 2 * 3.3f * (float) adc_read() / 4096;
     snprintf(&buf[6], 5, "%f", battery_voltage);
     buf[10] = 'V';
     buf[11] = 0;
-    dp.FillSmallArea(0, 200, y_coord - 20, y_coord + 40, 0xFFFF);
+    dp.FillSmallArea(0, 240, y_coord - 20, y_coord + 40, 0xFFFF);
     tf.RenderText(0, y_coord, buf);
     AddTask(update_status_voltage, 1000);
 }
