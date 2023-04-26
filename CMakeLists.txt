@@ -34,6 +34,7 @@ target_link_libraries(${PROJECT_NAME}
     hardware_spi
     hardware_dma
     hardware_irq
+    hardware_adc
     pico-tflmicro
     FatFs_SPI
 )

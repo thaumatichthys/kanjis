@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 #include "pico/bootrom.h"
+#include "hardware/adc.h"
 #include "hardware/gpio.h"
 #include "hardware/vreg.h"
 #include "hardware/clocks.h"
@@ -237,6 +238,12 @@ void update_watchdog() {
     AddTask(update_watchdog, 500);
 }
 
+void read_adc() {
+    float battery_voltage = 2 * 3.3f * (float) adc_read() / 4096;
+    printf("battery voltage: %f\n", battery_voltage);
+    AddTask(read_adc, 1000);
+}
+
 int main() {
     gpio_init(PSU_ENABLE_PIN);
     gpio_set_dir(PSU_ENABLE_PIN, GPIO_OUT);
@@ -252,6 +259,9 @@ int main() {
     gpio_put(25, 1);
     gpio_init(BUTTON_SENSE_PIN);
     gpio_set_dir(BUTTON_SENSE_PIN, GPIO_IN);
+    adc_init();
+    adc_gpio_init(BATTERY_VOLTAGE_PIN);
+    adc_select_input(BATTERY_VOLTAGE_PIN - 26);
     InitTensorflow();
     FileReader::Mount();
     dp.Init();
@@ -267,6 +277,7 @@ int main() {
     cli_reboot();
     update_watchdog();
     AddTask(power_off, 1000);
+    AddTask(read_adc, 1000);
     while(1) {
         if (!screen)
             update_draw_screen();
