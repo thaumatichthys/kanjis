@@ -219,7 +219,7 @@ void update_info_screen() {
             init_draw_screen();
         }
     }
-}
+} 
 
 void update_status_voltage() {
     if (screen != 2) return;
