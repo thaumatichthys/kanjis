@@ -95,14 +95,16 @@ class ILI9341 {
     void FillSmallArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint16_t colour);
     void WritePixel(uint16_t x, uint16_t y, uint16_t colour);
     void WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+    void WriteCompressedImage(const uint32_t* img);
     bool ReadTouch(uint16_t* x, uint16_t* y);
+    bool ReadTouchRaw(uint16_t* x, uint16_t* y);
     //void CalibrateTouchBlocking();
     void CorrectValues(uint16_t* x, uint16_t* y, const float coefficients[3][3]);
     void RenderBinary(const uint8_t* img, uint16_t colour, uint16_t background, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 };
 
-static const float calibration_matrix[3][3] = {
-    {1.1431899240291263, 0.006698261801041863, -17.979144411907356}, 
-    {0.03085493403284114, 1.0973331794214367, -20.534946776364155}, 
-    {-4.365957944118304e-05, 2.2327539336806273e-05, 1.0}
+static float calibration_matrix[3][3] = {
+    { 1, 0, 0 }, 
+    { 0, 1, 0 },
+    { 0, 0, 1 }
 };

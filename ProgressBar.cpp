@@ -21,6 +21,8 @@ ProgressBar::ProgressBar(uint16_t x, uint16_t y) {
     if (!initialized)
         AddTask(ProgressBar::update, 50);
     initialized = true;
+    progress[this->id] = 0.0f;
+    running[this->id] = false;
 }
 
 void ProgressBar::draw(uint8_t id, float t, uint16_t colour) {
@@ -51,10 +53,18 @@ void ProgressBar::Start(uint16_t duration) {
 }
 
 void ProgressBar::Stop() {
+    progress[this->id] = 0.0f;
     if (!running[this->id])
         return;
     running[this->id] = false;
-    for (float prog = 0.0f; prog < (2 * pi); prog += increment[this->id]) {
-        ProgressBar::draw(this->id, prog, 0);
+    //for (float prog = 0.0f; prog < (2 * pi); prog += increment[this->id]) {
+        //ProgressBar::draw(this->id, prog, 0);
+    //}
+}
+
+void ProgressBar::Change(float state, uint16_t colour) {
+    while (progress[this->id] < state) {
+        progress[this->id] += 0.005;
+        ProgressBar::draw(this->id, 2 * pi * progress[this->id], colour);
     }
 }

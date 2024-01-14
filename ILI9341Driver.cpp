@@ -144,6 +144,35 @@ void ILI9341::WritePixel(uint16_t x, uint16_t y, uint16_t colour) {
     ILI9341::SetPinState(ILI9341::tft_cs, 1);
 }
 
+/* 
+import cv2
+
+img = cv2.imread("X:/zkanjidevice-imgs/blanktft.png")
+DISPLAY_WIDTH = img.shape[1]    # 320
+DISPLAY_HEIGHT = img.shape[0]   # 240
+
+output_str = "const uint16_t image[] = {\n    "
+n_elements = 0
+
+for x in range(DISPLAY_WIDTH):
+    for y in range(DISPLAY_HEIGHT):
+        r = img[DISPLAY_HEIGHT - y - 1, x, 0] >> 3
+        g = img[DISPLAY_HEIGHT - y - 1, x, 1] >> 2
+        b = img[DISPLAY_HEIGHT - y - 1, x, 2] >> 3
+        value = ((b & 31) << 11) | ((g & 63) << 5) | (r & 31)
+        output_str += str(value) + ", "
+        n_elements += 1
+        if n_elements % 121 == 0:
+            output_str += "\n    "
+
+output_str += "\n};\n\n/" + "* Program which generated this file:\n"
+output_str += open("main.py").read() + "\n*" + "/\n"
+print(output_str)
+
+if DISPLAY_HEIGHT != 240 or DISPLAY_WIDTH != 320:
+    print("// Your image is not 320x240, ignore if you meant to do this")
+*/
+
 void ILI9341::WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
     if (ILI9341::disable_writing) return;
     ILI9341::SetPinState(ILI9341::tft_cs, 0);
@@ -172,6 +201,46 @@ void ILI9341::WriteSmallImage(const uint16_t* img, uint16_t x, uint16_t y, uint1
         this->Write16(img[i]);
     }
 
+    ILI9341::SetPinState(ILI9341::tft_cs, 1);
+}
+
+void ILI9341::WriteCompressedImage(const uint32_t* img) {
+    if (ILI9341::disable_writing) return;
+    ILI9341::SetPinState(ILI9341::tft_cs, 0);
+
+    const uint8_t column_address_set = 0x2A;
+    const uint8_t page_address_set = 0x2B;
+    const uint8_t memory_write = 0x2C;
+
+    const uint16_t x = 0;
+    const uint16_t y = 0;
+    const uint16_t w = 320;
+    const uint16_t h = 240;
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &column_address_set, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+    this->Write16(y);
+    this->Write16(y + h - 1);
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &page_address_set, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+    this->Write16(x);
+    this->Write16(x + w);
+
+    ILI9341::SetPinState(ILI9341::tft_dc, 0);
+    spi_write_blocking(ILI9341::spi_port, &memory_write, 1);
+    ILI9341::SetPinState(ILI9341::tft_dc, 1);
+
+    for (int i = 1; i < img[0] - 1; i++) {
+        uint16_t repeats = (uint16_t) (img[i] & 0xFFFF);
+        uint16_t pixel = (uint16_t) (img[i] >> 16);
+        for (int j = 0; j < repeats + 1; j++) {
+            this->Write16(pixel);
+        }
+    }
+    
     ILI9341::SetPinState(ILI9341::tft_cs, 1);
 }
 
@@ -215,6 +284,17 @@ void ILI9341::RenderBinary(const uint8_t* img, uint16_t colour, uint16_t backgro
 }
 
 bool ILI9341::ReadTouch(uint16_t* x, uint16_t* y) {
+    uint16_t x_raw, y_raw;
+    bool outcome = this->ReadTouchRaw(&x_raw, &y_raw);
+    CorrectValues(&x_raw, &y_raw, calibration_matrix);
+    if (x_raw > 320 || y_raw > 240)
+        return false;
+    *x = x_raw;
+    *y = y_raw;
+    return outcome;
+}
+
+bool ILI9341::ReadTouchRaw(uint16_t* x, uint16_t* y) {
     spi_set_baudrate(ILI9341::spi_port, ILI9341::xpt_baudrate); // the touch controller is quite slow
     ILI9341::SetPinState(ILI9341::xpt_cs, 0);
     //                             1XXX0001  ->  Start | 12 bit | differential | power down between conversions, IRQ disabled
@@ -303,8 +383,8 @@ void ILI9341::CorrectValues(uint16_t* x, uint16_t* y, const float coefficients[3
     */
     uint16_t x_val = *x;
     uint16_t y_val = *y;
-    uint16_t output_x = coefficients[0][0] * x_val + coefficients[0][1] * y_val + coefficients[0][2];
-    uint16_t output_y = coefficients[1][0] * x_val + coefficients[1][1] * y_val + coefficients[1][2];
+    uint16_t output_x = (coefficients[0][0] * x_val + coefficients[0][1] * y_val + coefficients[0][2]) / (coefficients[2][0] * x_val + coefficients[2][1] * y_val + 1);
+    uint16_t output_y = (coefficients[1][0] * x_val + coefficients[1][1] * y_val + coefficients[1][2]) / (coefficients[2][0] * x_val + coefficients[2][1] * y_val + 1);
     *x = output_x;
     *y = output_y;
 }

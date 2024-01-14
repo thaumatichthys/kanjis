@@ -6,8 +6,8 @@
 #include "math.h"
 
 
-#define MAX_BARS 4
-#define pi 3.141f
+#define MAX_BARS 10
+#define pi 3.142f
 
 class ProgressBar {
     static void update();
@@ -17,4 +17,5 @@ class ProgressBar {
     ProgressBar(uint16_t x, uint16_t y);
     void Start(uint16_t duration);
     void Stop();
+    void Change(float state, uint16_t colour);
 };
