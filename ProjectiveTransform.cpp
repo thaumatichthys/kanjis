@@ -45,9 +45,9 @@ void RowReduce(float input[][SIZE + 1]) {
                 }
             }
         }
-        printf("\n");
-        printM(input);
-        printf("\n");
+        //printf("\n");
+        //printM(input);
+        //printf("\n");
     }
     // turn the upper triangle into zeros
     for (int column = SIZE - 1; column > 0; column--) {
@@ -75,7 +75,7 @@ void GetProjectiveTransform(float output[3][3], float in1[8], float in2[8]) {
         {  in1[6],    in1[7],    1,    0,         0,         0,    -in2[6] * in1[6],   -in2[6] * in1[7],    in2[6] },
         {  0,         0,         0,    in1[6],    in1[7],    1,    -in2[7] * in1[6],   -in2[7] * in1[7],    in2[7] }
     };
-    printM(bigMatrix);
+    //printM(bigMatrix);
     RowReduce(bigMatrix);
     output[0][0] = bigMatrix[0][8];
     output[1][0] = bigMatrix[1][8];
@@ -86,6 +86,6 @@ void GetProjectiveTransform(float output[3][3], float in1[8], float in2[8]) {
     output[0][2] = bigMatrix[6][8];
     output[1][2] = bigMatrix[7][8];
     output[2][2] = 1.0f;
-    printf("after: \n");
-    printM(bigMatrix);
+    //printf("after: \n");
+    //printM(bigMatrix);
 }

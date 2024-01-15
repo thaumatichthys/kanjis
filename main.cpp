@@ -104,6 +104,9 @@ void compute_results() {
     if (core1_active) {
         multicore_reset_core1();
         pb.Stop();
+        pb.Change(1.0f, 0b1000010000010000);
+        pb.Stop();
+        
         core1_active = false;
     } 
 }
@@ -506,13 +509,6 @@ int main() {
     adc_init();
     adc_gpio_init(BATTERY_VOLTAGE_PIN);
     adc_select_input(BATTERY_VOLTAGE_PIN - 26);
-
-        sleep_ms(1000);
-        watchdog_update();
-        sleep_ms(1000);
-        watchdog_update();
-        sleep_ms(1000);
-        watchdog_update();
 
     InitTensorflow();
     dp.Init();
