@@ -767,3 +767,45 @@ const uint32_t calibration_image_compressed[] = {
     3187081216, 4, 2908028928, 4294901840, 1800208384, 3, 2215641088, 4294901905, 3046506496, 4, 3046506496, 4294901840, 1525350400, 3, 2356215808, 4294901905, 2908028928, 4, 3184984064, 4294901840, 1248395264, 3, 2631073792, 4294901905, 2769551360, 
     4, 3323461632, 4294901840, 1107820544, 3, 2908028928, 4294901905, 2631073792, 4, 3464036352, 4294901840, 832962560, 3, 3048603648, 4294901905, 2492596224, 4, 3602513920, 4294901840, 692387840, 3, 3323461632, 
 };
+
+/*
+import cv2
+
+img = cv2.imread("X:/zkanjidevice-imgs/blanktft.png")
+DISPLAY_WIDTH = img.shape[1]    # 320
+DISPLAY_HEIGHT = img.shape[0]   # 240
+
+output_str1 = "const uint32_t image[] = {\n    "
+n_elements = 1
+
+previous_value = -1
+previous_repeats = 0
+
+# format: 16 bit pixel value (left) + 16 bits of repetition number (right)
+# the first element is the length
+
+output_str2 = ", "
+
+
+for x in range(DISPLAY_WIDTH):
+    for y in range(DISPLAY_HEIGHT):
+        r = img[DISPLAY_HEIGHT - y - 2, x, 0] >> 3
+        g = img[DISPLAY_HEIGHT - y - 2, x, 1] >> 2
+        b = img[DISPLAY_HEIGHT - y - 2, x, 2] >> 3
+        value = ((b & 31) << 11) | ((g & 63) << 5) | (r & 31)
+        if (previous_value != value) or previous_repeats >= 65535:
+            total = previous_repeats | (previous_value << 16)
+            output_str2 += str(total & 0xFFFFFFFF) + ", "
+            previous_value = value
+            previous_repeats = 0
+            n_elements += 1
+            if n_elements % 25 == 0:
+                output_str2 += "\n    "
+
+        else:
+            previous_repeats += 1
+
+output_str2 += "\n};\n"
+print(output_str1 + str(n_elements) + output_str2)
+print("Flash size: " + str(4 * n_elements) + " bytes")
+*/
